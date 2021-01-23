@@ -23,7 +23,7 @@
 
 const ddlGenerator = require('./ddl-generator')
 
-function getGenOptions () {
+function getGenOptions() {
   return {
     fileExtension: app.preferences.get('ddl.gen.fileExtension'),
     quoteIdentifiers: app.preferences.get('ddl.gen.quoteIdentifiers'),
@@ -36,17 +36,23 @@ function getGenOptions () {
 
 /**
  * Command Handler for DDL Generation
+ * sql ddl生成
  *
  * @param {Element} base
  * @param {string} path
  * @param {Object} options
  */
-function _handleGenerate (base, path, options) {
+function _handleGenerate(base, path, options) {
+  // 初始值为空
   // If options is not passed, get from preference
   options = options || getGenOptions()
   // If base is not assigned, popup ElementPicker
   if (!base) {
-    app.elementPickerDialog.showDialog('Select a data model to generate DDL', null, type.ERDDataModel).then(function ({buttonId, returnValue}) {
+    // 选择ERDDataModel
+    app.elementPickerDialog.showDialog('Select a data model to generate DDL', null, type.ERDDataModel).then(function ({
+      buttonId,
+      returnValue
+    }) {
       if (buttonId === 'ok') {
         base = returnValue
         // If path is not assigned, popup Save Dialog to save a file
@@ -76,13 +82,13 @@ function _handleGenerate (base, path, options) {
 }
 
 /**
-* Popup PreferenceDialog with DDL Preference Schema
-*/
-function _handleConfigure () {
+ * Popup PreferenceDialog with DDL Preference Schema
+ */
+function _handleConfigure() {
   app.commands.execute('application:preferences', 'ddl')
 }
 
-function init () {
+function init() {
   app.commands.register('ddl:generate', _handleGenerate)
   app.commands.register('ddl:configure', _handleConfigure)
 }

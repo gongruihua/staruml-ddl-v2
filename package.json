@@ -1,11 +1,11 @@
 {
-  "name": "niklauslee.staruml-ddl",
+  "name": "niklauslee.staruml-ddl.v2",
   "title": "DDL (Data Definition Language)",
   "description": "Generate DDL (Data Definition Language) from ERD",
   "homepage": "https://github.com/niklauslee/staruml-ddl",
   "issues": "https://github.com/niklauslee/staruml-ddl/issues",
   "keywords": ["ddl", "erd", "database"],
-  "version": "0.9.2",
+  "version": "0.0.2",
   "author": {
     "name": "Minkyu Lee",
     "email": "niklaus.lee@gmail.com",

@@ -34,7 +34,7 @@ class DDLGenerator {
    * @param {type.ERDDataModel} baseModel
    * @param {string} basePath generated files and directories to be placed
    */
-  constructor (baseModel, basePath) {
+  constructor(baseModel, basePath) {
     /** @member {type.Model} */
     this.baseModel = baseModel
 
@@ -47,7 +47,7 @@ class DDLGenerator {
    * @param {Object} options
    * @return {string}
    */
-  getIndentString (options) {
+  getIndentString(options) {
     if (options.useTab) {
       return '\t'
     } else {
@@ -62,10 +62,20 @@ class DDLGenerator {
 
   /**
    * Return Identifier (Quote or not)
-   * @param {String} id
+   * @param {String} id table_name(short_name chinese_name)
    * @param {Object} options
    */
-  getId (id, options) {
+  getId(id, options) {
+    if (options.dbms === 'new_mysql') {
+      // 处理括号中内容
+      if (id.indexOf('(') !== -1) {
+        id = id.substring(0, id.indexOf('('))
+      }
+      // 处理空格,一般空格后是注释
+      if (id.indexOf(' ') !== -1) {
+        id = id.substring(0, id.indexOf(' '))
+      }
+    }
     if (options.quoteIdentifiers) {
       return '`' + id + '`'
     }
@@ -77,7 +87,7 @@ class DDLGenerator {
    * @param {type.ERDEntity} elem
    * @return {Array.<ERDColumn>}
    */
-  getPrimaryKeys (elem) {
+  getPrimaryKeys(elem) {
     var keys = []
     elem.columns.forEach(function (col) {
       if (col.primaryKey) {
@@ -92,7 +102,7 @@ class DDLGenerator {
    * @param {type.ERDEntity} elem
    * @return {Array.<ERDColumn>}
    */
-  getForeignKeys (elem) {
+  getForeignKeys(elem) {
     var keys = []
     elem.columns.forEach(function (col) {
       if (col.foreignKey) {
@@ -103,12 +113,25 @@ class DDLGenerator {
   }
 
   /**
+   * 
+   * @param {type.ERDEntity} elem
+   */
+  getColComent(elem) {
+    const name = elem.name
+    const spachIndex = name.indexOf(' ')
+    if (spachIndex !== -1) {
+      return ' COMMENT \'' + name.substring(spachIndex + 1) + '\''
+    }
+    return ''
+  }
+
+  /**
    * Return DDL column string
    * @param {type.ERDColumn} elem
    * @param {Object} options
    * @return {String}
    */
-  getColumnString (elem, options) {
+  getColumnString(elem, options) {
     var self = this
     var line = self.getId(elem.name, options)
     var _type = elem.getTypeString()
@@ -119,7 +142,26 @@ class DDLGenerator {
     if (elem.primaryKey || !elem.nullable) {
       line += ' NOT NULL'
     }
+    if (options.dbms === 'new_mysql') {
+      // 增加注释
+      const colComent = self.getColComent(elem)
+      line += colComent
+    }
     return line
+  }
+
+  /**
+   * Return table comment
+   * @param {type.ERDEntity} elem 
+   */
+  getTableComment(elem) {
+    // table_name(table_short_name table_chinese_name)
+    const name = elem.name
+    if (name.indexOf('(') !== -1 && name.indexOf(')') !== -1) {
+      const descName = name.substring(name.indexOf('(') + 1, name.indexOf(')'))
+      return '\'' + descName.substring(descName.indexOf(' ') + 1) + '\''
+    }
+    return ''
   }
 
   /**
@@ -128,7 +170,7 @@ class DDLGenerator {
    * @param {type.ERDEntity} elem
    * @param {Object} options
    */
-  writeForeignKeys (codeWriter, elem, options) {
+  writeForeignKeys(codeWriter, elem, options) {
     var self = this
     var fks = self.getForeignKeys(elem)
     var ends = elem.getRelationshipEnds(true)
@@ -140,7 +182,9 @@ class DDLGenerator {
           var matched = true
           var matchedFKs = []
           _pks.forEach(function (pk) {
-            var r = fks.find(function (k) { return k.referenceTo === pk })
+            var r = fks.find(function (k) {
+              return k.referenceTo === pk
+            })
             if (r) {
               matchedFKs.push(r)
             } else {
@@ -149,12 +193,18 @@ class DDLGenerator {
           })
 
           if (matched) {
-            fks = fks.filter(e => { return !matchedFKs.includes(e) })
+            fks = fks.filter(e => {
+              return !matchedFKs.includes(e)
+            })
             var line = 'ALTER TABLE '
             line += self.getId(elem.name, options) + ' '
-            line += 'ADD FOREIGN KEY (' + matchedFKs.map(function (k) { return self.getId(k.name, options) }).join(', ') + ') '
+            line += 'ADD FOREIGN KEY (' + matchedFKs.map(function (k) {
+              return self.getId(k.name, options)
+            }).join(', ') + ') '
             line += 'REFERENCES ' + self.getId(_pks[0]._parent.name, options)
-            line += '(' + _pks.map(function (k) { return self.getId(k.name, options) }) + ');'
+            line += '(' + _pks.map(function (k) {
+              return self.getId(k.name, options)
+            }) + ');'
             codeWriter.writeLine(line)
           }
         }
@@ -178,8 +228,8 @@ class DDLGenerator {
    * @param {type.ERDEntity} elem
    * @param {Object} options
    */
-  writeDropTable (codeWriter, elem, options) {
-    if (options.dbms === 'mysql') {
+  writeDropTable(codeWriter, elem, options) {
+    if (options.dbms === 'mysql' || options.dbms === 'new_mysql') {
       codeWriter.writeLine('DROP TABLE IF EXISTS ' + this.getId(elem.name, options) + ';')
     } else if (options.dbms === 'oracle') {
       codeWriter.writeLine('DROP TABLE ' + this.getId(elem.name, options) + ' CASCADE CONSTRAINTS;')
@@ -192,7 +242,7 @@ class DDLGenerator {
    * @param {type.ERDEntity} elem
    * @param {Object} options
    */
-  writeTable (codeWriter, elem, options) {
+  writeTable(codeWriter, elem, options) {
     var self = this
     var lines = []
     var primaryKeys = []
@@ -229,7 +279,17 @@ class DDLGenerator {
     }
 
     codeWriter.outdent()
-    codeWriter.writeLine(');')
+    // table Comment
+    if (options.dbms === 'new_mysql') {
+      const tableComment = self.getTableComment(elem)
+      if (tableComment != '') {
+        codeWriter.writeLine(') COMMENT ' + tableComment + ";")
+      } else {
+        codeWriter.writeLine(');')
+      }
+    } else {
+      codeWriter.writeLine(');')
+    }
     codeWriter.writeLine()
   }
 
@@ -237,19 +297,19 @@ class DDLGenerator {
    * Generate codes from a given element
    * @param {type.Model} elem
    * @param {string} path
-   * @param {Object} options
+   * @param {Object} options 配置信息
    * @return {$.Promise}
    */
-  generate (elem, basePath, options) {
+  generate(elem, basePath, options) {
     var codeWriter
-
     // DataModel
     if (elem instanceof type.ERDDataModel) {
-      codeWriter = new codegen.CodeWriter(this.getIndentString(options))
+      const indentString = this.getIndentString(options)
+      codeWriter = new codegen.CodeWriter(indentString)
 
       // Drop Tables
       if (options.dropTable) {
-        if (options.dbms === 'mysql') {
+        if (options.dbms === 'mysql' || options.dbms === 'new_mysql') {
           codeWriter.writeLine('SET FOREIGN_KEY_CHECKS = 0;')
         }
         elem.ownedElements.forEach(e => {
@@ -257,7 +317,7 @@ class DDLGenerator {
             this.writeDropTable(codeWriter, e, options)
           }
         })
-        if (options.dbms === 'mysql') {
+        if (options.dbms === 'mysql' || options.dbms === 'new_mysql') {
           codeWriter.writeLine('SET FOREIGN_KEY_CHECKS = 1;')
         }
         codeWriter.writeLine()
@@ -271,11 +331,14 @@ class DDLGenerator {
       })
 
       // Foreign Keys
-      elem.ownedElements.forEach(e => {
-        if (e instanceof type.ERDEntity) {
-          this.writeForeignKeys(codeWriter, e, options)
-        }
-      })
+      // new_mysql 外键不需要
+      if (options.dbms !== 'new_mysql') {
+        elem.ownedElements.forEach(e => {
+          if (e instanceof type.ERDEntity) {
+            this.writeForeignKeys(codeWriter, e, options)
+          }
+        })
+      }
 
       // Others (Nothing generated.)
       fs.writeFileSync(basePath, codeWriter.getData())
@@ -289,7 +352,7 @@ class DDLGenerator {
  * @param {string} basePath
  * @param {Object} options
  */
-function generate (baseModel, basePath, options) {
+function generate(baseModel, basePath, options) {
   var generator = new DDLGenerator(baseModel, basePath)
   return generator.generate(baseModel, basePath, options)
 }

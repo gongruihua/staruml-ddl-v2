@@ -34,9 +34,10 @@
       "type": "dropdown",
       "options": [
         { "value": "mysql",  "text": "MySQL" },
-        { "value": "oracle", "text": "Oracle" }
+        { "value": "oracle", "text": "Oracle" },
+        { "value": "new_mysql",  "text": "NEW MySQL" }
       ],
-      "default": "mysql"
+      "default": "new_mysql"
     },
     "ddl.gen.useTab": {
       "text": "Use Tab",
