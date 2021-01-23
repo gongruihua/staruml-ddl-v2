@@ -1,6 +1,6 @@
 {
   "name": "niklauslee.staruml-ddl.v2",
-  "title": "DDL (Data Definition Language)",
+  "title": "DDL (Data Definition Language) v2",
   "description": "Generate DDL (Data Definition Language) from ERD",
   "homepage": "https://github.com/niklauslee/staruml-ddl",
   "issues": "https://github.com/niklauslee/staruml-ddl/issues",
