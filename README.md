@@ -37,7 +37,7 @@ CREATE TABLE `product` (
 ) COMMENT '产品信息';
 ```
 
-
+Thanks [Minkyu Lee](https://github.com/niklauslee)
 
 ## How to use
 
