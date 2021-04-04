@@ -17,7 +17,7 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 5. 增加属性注释和表注释
 
 ### 示例
-1. ER 图示例在`./example`文件夹下[产品设计ER图](./example/product.mdj)
+1. ER 图示例在`./example`文件夹下[产品设计ER图](./example/product.mdj)  
 2。 生成的 SQL 语句为:
 
 ```SQL
