@@ -55,9 +55,9 @@ CREATE TABLE `product` (
 
 #### 修改默认的Column
 
-· MacOS: ~/Library/Application Support/StarUML/extensions/user/staruml-ddl-v2/column-define.json
-· Windows: C:\Users\<user>\AppData\Roaming\StarUML\extensions\user\staruml-ddl-v2\column-define.json
-· Linux: ~/.config/StarUML/extensions/user/staruml-ddl-v2/column-define.json
+- MacOS: ~/Library/Application Support/StarUML/extensions/user/staruml-ddl-v2/column-define.json
+- Windows: C:\Users\<user>\AppData\Roaming\StarUML\extensions\user\staruml-ddl-v2\column-define.json
+- Linux: ~/.config/StarUML/extensions/user/staruml-ddl-v2/column-define.json
 
 ```js
 {
