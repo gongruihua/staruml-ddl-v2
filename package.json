@@ -1,11 +1,11 @@
 {
-  "name": "niklauslee.staruml-ddl.v2",
+  "name": "staruml-ddl.v2",
   "title": "DDL (Data Definition Language) v2",
   "description": "Generate DDL (Data Definition Language) from ERD",
   "homepage": "https://github.com/fuzi1996/staruml-ddl-v2",
   "issues": "https://github.com/fuzi1996/staruml-ddl-v2/issues",
   "keywords": ["ddl", "erd", "database"],
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": {
     "name": "fuzi",
     "email": "imfuzi@163.com",

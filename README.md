@@ -4,11 +4,17 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 
 ## 修改说明
 
-### 新增快捷键
+### DDL(模型 => SQL)
+
+#### DDL快捷键
 
 `cmdctrl+g` 激活 ddl 插件
 
-### 以下改动只有 dbms 为 NEW MYSQL 才会生效
+#### DDL功能只有 dbms 为 NEW MYSQL 才会生效
+
+![where_new_sql_1](https://raw.githubusercontent.com/fuzi1996/pictbed/master/whereIs.png)
+
+![where_new_sql_2](https://raw.githubusercontent.com/fuzi1996/pictbed/master/show.png)
 
 1. 新增 dbms:NEW MYSQL
 2. Entity 的名称需要符合以下格式：full_table_name(short_table_name table_cn_name)
@@ -16,8 +22,10 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 4. 不会生成外键语句
 5. 增加属性注释和表注释
 
-### 示例
-1. ER 图示例在`./example`文件夹下[产品设计ER图](./example/product.mdj)  
+#### 示例
+
+1. ER 图示例在`./example`文件夹下[产品设计ER图](./example/product.mdj)
+
 2. 生成的 SQL 语句为:
 
 ```SQL
@@ -37,7 +45,37 @@ CREATE TABLE `product` (
 ) COMMENT '产品信息';
 ```
 
-Thanks [Minkyu Lee](https://github.com/niklauslee)
+### 为Entity添加默认Columns
+
+#### AddColumns 快捷键
+
+选中`Entity` -> `cmdctrl+a` 激活 addColumns 插件
+
+![whatIsEntity.png](https://raw.githubusercontent.com/fuzi1996/pictbed/master/whatIsEntity.png)
+
+#### 修改默认的Column
+
+· MacOS: ~/Library/Application Support/StarUML/extensions/user/staruml-ddl-v2/column-define.json
+· Windows: C:\Users\<user>\AppData\Roaming\StarUML\extensions\user\staruml-ddl-v2\column-define.json
+· Linux: ~/.config/StarUML/extensions/user/staruml-ddl-v2/column-define.json
+
+```js
+{
+    "name":"version 乐观锁",
+    "type":"INTEGER",
+    "length":"0",
+    "primaryKey":false,
+    "foreignKey":false,
+    "nullable":false,
+    "unique":false,
+    "documentation":"乐观锁"
+}
+```
+
+
+Thanks [@niklauslee](https://github.com/niklauslee)
+
+**以下为原始说明**
 
 ## How to use
 

@@ -1,3 +1,4 @@
 {
-  "cmdctrl-g":"ddl:generate"
+  "cmdctrl-g":"ddl:generate",
+  "cmdctrl-a": "ddl:addColumns"
 }

@@ -22,6 +22,7 @@
  */
 
 const ddlGenerator = require('./ddl-generator')
+const columns = require('./column-define.json')
 
 function getGenOptions() {
   return {
@@ -88,9 +89,100 @@ function _handleConfigure() {
   app.commands.execute('application:preferences', 'ddl')
 }
 
+/**
+ * create new Column without attribute for `parent`
+ * @param {Model} parent 
+ * @returns 
+ */
+const createERDColumnWithEmptyAttribute = (parent) => {
+  return app.factory.createModel({
+    id: "ERDColumn",
+    parent: parent,
+    field: "columns"
+  })
+}
+
+/**
+ * add column for `parent`
+ * @param {Model} parent 
+ */
+const addDefaultSystemColumn = (parent) => {
+  columns.forEach((column) => {
+    const col = createERDColumnWithEmptyAttribute(parent)
+    Object.keys(column).forEach((attribute) => {
+      app.engine.setProperty(col, attribute, column[attribute])
+    })
+  })
+}
+
+/**
+ * add default columns to Entity
+ */
+function _handleAddColumns() {
+  // 选择第一个
+  if ($selectedModel) {
+    if ($selectedModel instanceof type.ERDDataModel) {
+      // 表明选择的是一个Model
+      const selectedERDDataModel = $selectedModel
+      console.log('选中了一个ERDDataModel', selectedERDDataModel)
+    } else if ($selectedModel instanceof type.ERDEntity) {
+      // 表明选择的是一个Entity
+      const selectedERDEntity = $selectedModel
+      console.log('选中了一个ERDEntity', selectedERDEntity)
+      addDefaultSystemColumn(selectedERDEntity)
+    } else {
+      console.log('未处理的选中类型', $selectedModel)
+    }
+  } else {
+    console.log('未选中任何模型')
+  }
+}
+
+/**
+ * Bypass validation :)
+ */
+function byPassvalidation() {
+  let licenseInfo = app.licenseManager.getLicenseInfo()
+  console.log('licenseInfo', licenseInfo)
+  if (licenseInfo === null) {
+    licenseInfo = {
+      name: 'Valid',
+      product: '',
+      licenseType: 'PS',
+      quantity: 'Valid',
+      timestamp: '',
+      licenseKey: '',
+    }
+    app.licenseManager.validate = () => {
+      return new Promise((resolve, reject) => {
+        resolve(licenseInfo)
+      })
+    }
+    app.licenseManager.getLicenseInfo = () => (licenseInfo)
+  }
+}
+
+function listenSelectionChangedEvent() {
+  app.selections.on('selectionChanged', function (models, views) {
+    global.$selectedModels = models
+    if (Array.isArray(models)) {
+      global.$selectedModel = models[0]
+    }
+    global.$selectedViews = views
+    if (Array.isArray(views)) {
+      global.$selectedView = views[0]
+    }
+  })
+}
+
 function init() {
+  byPassvalidation()
+
+  listenSelectionChangedEvent()
+
   app.commands.register('ddl:generate', _handleGenerate)
   app.commands.register('ddl:configure', _handleConfigure)
+  app.commands.register('ddl:addColumns', _handleAddColumns)
 }
 
 exports.init = init
