@@ -5,7 +5,7 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 ## 修改说明
 
 新增功能:
-1. [DDL SQL生成功能优化](#DDL(模型))
+1. [DDL SQL生成功能优化](#DDL(模型)
 
   - 新增 dbms:NEW MYSQL
   - Entity 的名称需要符合以下格式：full_table_name(short_table_name table_cn_name)
@@ -15,7 +15,7 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 
 2. [ER图中根据定义JSON文件为Entity生成Column](#为Entity添加默认Columns)
 
-3. 根据CREATE SQL生成DataModel(#dataModel生成)
+3. [根据CREATE SQL生成DataModel](#dataModel生成)
 
 ### DDL(模型 => SQL)
 
