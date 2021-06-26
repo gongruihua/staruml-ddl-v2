@@ -15,7 +15,7 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 
 2. [ER图中根据定义JSON文件为Entity生成Column](#为Entity添加默认Columns)
 
-3. 根据CREATE SQL生成DataModel(#DataModel生成)
+3. 根据CREATE SQL生成DataModel(#dataModel生成)
 
 ### DDL(模型 => SQL)
 
