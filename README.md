@@ -4,6 +4,19 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 
 ## 修改说明
 
+新增功能:
+1. [DDL SQL生成功能优化](#DDL(模型))
+
+  - 新增 dbms:NEW MYSQL
+  - Entity 的名称需要符合以下格式：full_table_name(short_table_name table_cn_name)
+  - Entity 的 column 的 name 命名需要符合以下格式: full_column_name column_cn_name
+  - 不会生成外键语句
+  - 增加属性注释和表注释
+
+2. [ER图中根据定义JSON文件为Entity生成Column](#为Entity添加默认Columns)
+
+3. 根据CREATE SQL生成DataModel(#DataModel生成)
+
 ### DDL(模型 => SQL)
 
 #### DDL快捷键
@@ -16,15 +29,11 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 
 ![where_new_sql_2](https://raw.githubusercontent.com/fuzi1996/pictbed/master/show.png)
 
-1. 新增 dbms:NEW MYSQL
-2. Entity 的名称需要符合以下格式：full_table_name(short_table_name table_cn_name)
-3. Entity 的 column 的 name 命名需要符合以下格式: full_column_name column_cn_name
-4. 不会生成外键语句
-5. 增加属性注释和表注释
-
 #### 示例
 
 1. ER 图示例在`./example`文件夹下[产品设计ER图](./example/product.mdj)
+
+![ER图示例](https://raw.githubusercontent.com/fuzi1996/pictbed/master/mdj_show.png)
 
 2. 生成的 SQL 语句为:
 
@@ -46,6 +55,8 @@ CREATE TABLE `product` (
 ```
 
 ### 为Entity添加默认Columns
+
+**ER图中根据定义JSON文件为Entity生成Column**
 
 #### AddColumns 快捷键
 
@@ -71,6 +82,55 @@ CREATE TABLE `product` (
     "documentation":"乐观锁"
 }
 ```
+
+### DataModel生成
+
+- `Tools` -> `DDL` -> `Generate DataModel` 
+![whereDataModelGenerate.png](https://raw.githubusercontent.com/fuzi1996/pictbed/master/whereDataModelGenerate.png)
+
+- Enter Create SQL,like 
+
+```sql 
+CREATE TABLE `mf_fd_cache` (
+  `id` bigint(18) NOT NULL AUTO_INCREMENT,
+  `dep` varchar(3) NOT NULL DEFAULT '',
+  `arr` varchar(3) NOT NULL DEFAULT '',
+  `flightNo` varchar(10) NOT NULL DEFAULT '',
+  `flightDate` date NOT NULL DEFAULT '1000-10-10',
+  `flightTime` varchar(20) NOT NULL DEFAULT '',
+  `isCodeShare` tinyint(1) NOT NULL DEFAULT '0',
+  `tax` int(11) NOT NULL DEFAULT '0',
+  `yq` int(11) NOT NULL DEFAULT '0',
+  `cabin` char(2) NOT NULL DEFAULT '',
+  `ibe_price` int(11) NOT NULL DEFAULT '0',
+  `ctrip_price` int(11) NOT NULL DEFAULT '0',
+  `official_price` int(11) NOT NULL DEFAULT '0',
+  `uptime` datetime NOT NULL DEFAULT '1000-10-10 10:10:10',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uid` (`dep`,`arr`,`flightNo`,`flightDate`,`cabin`),
+  KEY `uptime` (`uptime`),
+  KEY `flight` (`dep`,`arr`),
+  KEY `flightDate` (`flightDate`)
+) ENGINE=InnoDB  DEFAULT CHARSET=gbk;
+
+-- or --
+
+CREATE TABLE `product` (
+    `code` VARCHAR(50) NOT NULL COMMENT '产品代码',
+    `name` VARCHAR(300) NOT NULL COMMENT '产品名称',
+    `price` DECIMAL(19,4) COMMENT ' 产品价格',
+    `start_date` date COMMENT '成立日',
+    `end_date` date COMMENT '到期日',
+    `desc` VARCHAR(1500) COMMENT '产品描述',
+    PRIMARY KEY (`code`),
+    UNIQUE (`name`)
+) COMMENT '产品信息';
+```
+
+![normal-sql-generate-datamodel.png](https://raw.githubusercontent.com/fuzi1996/pictbed/master/normal-sql-generate-datamodel.png)
+
+![cn-name-generate-dataModel.png](https://raw.githubusercontent.com/fuzi1996/pictbed/master/cn-name-generate-dataModel.png)
+
 
 
 Thanks [@niklauslee](https://github.com/niklauslee)

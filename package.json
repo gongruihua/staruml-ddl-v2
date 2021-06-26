@@ -4,8 +4,12 @@
   "description": "Generate DDL (Data Definition Language) from ERD",
   "homepage": "https://github.com/fuzi1996/staruml-ddl-v2",
   "issues": "https://github.com/fuzi1996/staruml-ddl-v2/issues",
-  "keywords": ["ddl", "erd", "database"],
-  "version": "0.0.3",
+  "keywords": [
+    "ddl",
+    "erd",
+    "database"
+  ],
+  "version": "0.0.4",
   "author": {
     "name": "fuzi",
     "email": "imfuzi@163.com",
@@ -14,5 +18,8 @@
   "license": "MIT",
   "engines": {
     "staruml": "^3.0.0"
+  },
+  "dependencies": {
+    "node-sql-parser": "^3.6.0"
   }
 }

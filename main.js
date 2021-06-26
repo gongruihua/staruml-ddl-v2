@@ -21,8 +21,14 @@
  *
  */
 
-const ddlGenerator = require('./ddl-generator')
+const ddlGenerator = require('./src/generate/ddl-generator')
 const columns = require('./column-define.json')
+const {
+  parseSQL
+} = require('./src/parse/parse-sql')
+const {
+  addDefaultSystemColumn
+} = require('./src/generate/add-columns')
 
 function getGenOptions() {
   return {
@@ -90,37 +96,11 @@ function _handleConfigure() {
 }
 
 /**
- * create new Column without attribute for `parent`
- * @param {Model} parent 
- * @returns 
- */
-const createERDColumnWithEmptyAttribute = (parent) => {
-  return app.factory.createModel({
-    id: "ERDColumn",
-    parent: parent,
-    field: "columns"
-  })
-}
-
-/**
- * add column for `parent`
- * @param {Model} parent 
- */
-const addDefaultSystemColumn = (parent) => {
-  columns.forEach((column) => {
-    const col = createERDColumnWithEmptyAttribute(parent)
-    Object.keys(column).forEach((attribute) => {
-      app.engine.setProperty(col, attribute, column[attribute])
-    })
-  })
-}
-
-/**
  * add default columns to Entity
  */
 function _handleAddColumns() {
   // 选择第一个
-  if ($selectedModel) {
+  if (global.$selectedModel) {
     if ($selectedModel instanceof type.ERDDataModel) {
       // 表明选择的是一个Model
       const selectedERDDataModel = $selectedModel
@@ -129,13 +109,30 @@ function _handleAddColumns() {
       // 表明选择的是一个Entity
       const selectedERDEntity = $selectedModel
       console.log('选中了一个ERDEntity', selectedERDEntity)
-      addDefaultSystemColumn(selectedERDEntity)
+      addDefaultSystemColumn(selectedERDEntity, columns)
     } else {
       console.log('未处理的选中类型', $selectedModel)
     }
   } else {
-    console.log('未选中任何模型')
+    app.toast.info("未选中任何模型")
   }
+}
+
+function _handleGenerateDataModel() {
+  const dialog = app.dialogs.showTextDialog("Enter CREATE SQL", '');
+  dialog.then(function ({
+    buttonId,
+    returnValue
+  }) {
+    if (buttonId === 'ok') {
+      parseSQL(returnValue)
+    } else {
+      //User canceled
+    }
+  })
+  const el = dialog.getElement()
+  el.find('.k-textbox.text-box.primary')[0].focus()
+  el.find('.k-button.dialog-button')[0].className += ' primary'
 }
 
 /**
@@ -143,7 +140,6 @@ function _handleAddColumns() {
  */
 function byPassvalidation() {
   let licenseInfo = app.licenseManager.getLicenseInfo()
-  console.log('licenseInfo', licenseInfo)
   if (licenseInfo === null) {
     licenseInfo = {
       name: 'Valid',
@@ -183,6 +179,7 @@ function init() {
   app.commands.register('ddl:generate', _handleGenerate)
   app.commands.register('ddl:configure', _handleConfigure)
   app.commands.register('ddl:addColumns', _handleAddColumns)
+  app.commands.register('ddl:generate-data-model', _handleGenerateDataModel)
 }
 
 exports.init = init
