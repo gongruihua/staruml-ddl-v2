@@ -5,7 +5,7 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 ## 修改说明
 
 新增功能:
-1. [DDL SQL生成功能优化](#DDL(模型)
+1. [DDL SQL生成功能优化](#DDL(模型))
 
   - 新增 dbms:NEW MYSQL
   - Entity 的名称需要符合以下格式：full_table_name(short_table_name table_cn_name)
