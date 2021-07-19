@@ -18,7 +18,7 @@ class AddColumns {
    */
   generate() {
     this.columns.forEach((column) => {
-      const col = createERDColumn(parent)
+      const col = createERDColumn(this.parent)
       Object.keys(column).forEach((attribute) => {
         app.engine.setProperty(col, attribute, column[attribute])
       })
