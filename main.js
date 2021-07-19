@@ -158,6 +158,13 @@ function byPassvalidation() {
   }
 }
 
+/**
+ * dataModel -> plantUml
+ */
+function _handleGeneratePlantUml() {
+  console.log('dataModel -> plantUml')
+}
+
 function listenSelectionChangedEvent() {
   app.selections.on('selectionChanged', function (models, views) {
     global.$selectedModels = models
@@ -180,6 +187,7 @@ function init() {
   app.commands.register('ddl:configure', _handleConfigure)
   app.commands.register('ddl:addColumns', _handleAddColumns)
   app.commands.register('ddl:generate-data-model', _handleGenerateDataModel)
+  app.commands.register('ddl:data-model2PlantUml', _handleGeneratePlantUml)
 }
 
 exports.init = init
