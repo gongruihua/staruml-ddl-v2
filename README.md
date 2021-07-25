@@ -131,6 +131,16 @@ CREATE TABLE `product` (
 
 ![cn-name-generate-dataModel.png](https://raw.githubusercontent.com/fuzi1996/pictbed/master/cn-name-generate-dataModel.png)
 
+### PlantUML生成
+
+**根据ERDDataModel或ERDEntity生成PlantUML**
+
+![plantuml-generate.png](https://raw.githubusercontent.com/fuzi1996/pictbed/master/plantuml-generate.png)
+
+1. 选中`Datamodel`
+2. Tools -> DDL -> Generate PlantUML
+   或者使用快捷键`ctrl`+`p`
+
 
 
 Thanks [@niklauslee](https://github.com/niklauslee)

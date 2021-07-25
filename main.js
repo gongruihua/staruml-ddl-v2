@@ -29,6 +29,7 @@ const {
 const {
   addDefaultSystemColumn
 } = require('./src/generate/add-columns')
+const plantUmlGenerate = require('./src/generate/plantuml-generate')
 
 function getGenOptions() {
   return {
@@ -158,6 +159,19 @@ function byPassvalidation() {
   }
 }
 
+/**
+ * dataModel -> plantUml
+ */
+function _handleGeneratePlantUml() {
+  if (global.$selectedModel instanceof type.ERDDataModel) {
+    plantUmlGenerate.dataModelGenerate(global.$selectedModel)
+  } else if (global.$selectedModel instanceof type.ERDEntity) {
+    plantUmlGenerate.entityGenerate(global.$selectedModel)
+  } else {
+    app.toast.info("选择的不是数据模型或Entity,无法生成DataModel")
+  }
+}
+
 function listenSelectionChangedEvent() {
   app.selections.on('selectionChanged', function (models, views) {
     global.$selectedModels = models
@@ -180,6 +194,7 @@ function init() {
   app.commands.register('ddl:configure', _handleConfigure)
   app.commands.register('ddl:addColumns', _handleAddColumns)
   app.commands.register('ddl:generate-data-model', _handleGenerateDataModel)
+  app.commands.register('ddl:data-model2PlantUml', _handleGeneratePlantUml)
 }
 
 exports.init = init

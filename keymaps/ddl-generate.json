@@ -1,5 +1,6 @@
 {
   "cmdctrl-g":"ddl:generate",
   "cmdctrl-w": "ddl:addColumns",
-  "cmdctrl-m": "ddl:generate-data-model"
+  "cmdctrl-m": "ddl:generate-data-model",
+  "cmdctrl-p":"ddl:data-model2PlantUml"
 }
