@@ -1,0 +1,12 @@
+@startuml
+
+entity "product(产品信息)" as p {
+  code 产品代码:VARCHAR(50)
+  name 产品名称:VARCHAR(300)
+  price 产品价格:DECIMAL
+  start_date 成立日:date
+  end_date 到期日:date
+  desc 产品描述:VARCHAR(1500)
+}
+
+@enduml

@@ -9,7 +9,7 @@
     "erd",
     "database"
   ],
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": {
     "name": "fuzi",
     "email": "imfuzi@163.com",
@@ -20,6 +20,7 @@
     "staruml": "^3.0.0"
   },
   "dependencies": {
+    "mustache": "^4.2.0",
     "node-sql-parser": "^3.6.0"
   }
 }
