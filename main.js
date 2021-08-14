@@ -65,7 +65,7 @@ function _handleGenerate(base, path, options) {
         base = returnValue
         // If path is not assigned, popup Save Dialog to save a file
         if (!path) {
-          var file = app.dialogs.showSaveDialog('Save DDL As...', null, null)
+          var file = app.dialogs.showSaveDialog('Save DDL As...', null, getFileFilters(options.fileExtension))
           if (file && file.length > 0) {
             path = file
             ddlGenerator.generate(base, path, options)
@@ -76,9 +76,9 @@ function _handleGenerate(base, path, options) {
       }
     })
   } else {
-    // If path is not assigned, popup Save Dialog to save a file
+    // If path is not assigned, popup Save Dialog to save a file    
     if (!path) {
-      var file = app.dialogs.showSaveDialog('Save DDL As...', null, null)
+      var file = app.dialogs.showSaveDialog('Save DDL As...', null, getFileFilters(options.fileExtension))
       if (file && file.length > 0) {
         path = file
         ddlGenerator.generate(base, path, options)
@@ -87,6 +87,15 @@ function _handleGenerate(base, path, options) {
       ddlGenerator.generate(base, path, options)
     }
   }
+}
+
+function getFileFilters(fileExtension){
+  fileExtension = fileExtension.substring(1)
+  return [
+    { name: fileExtension, extensions: [fileExtension] },
+    { name: fileExtension === 'sql'?'ddl':'sql', extensions: [fileExtension === 'sql'?'ddl':"sql"] },
+    { name: 'All Files', extensions: ['*'] }
+  ]
 }
 
 /**
@@ -101,21 +110,22 @@ function _handleConfigure() {
  */
 function _handleAddColumns() {
   // 选择第一个
-  if (global.$selectedModel) {
-    if ($selectedModel instanceof type.ERDDataModel) {
-      // 表明选择的是一个Model
-      const selectedERDDataModel = $selectedModel
-      console.log('选中了一个ERDDataModel', selectedERDDataModel)
-    } else if ($selectedModel instanceof type.ERDEntity) {
-      // 表明选择的是一个Entity
-      const selectedERDEntity = $selectedModel
-      console.log('选中了一个ERDEntity', selectedERDEntity)
-      addDefaultSystemColumn(selectedERDEntity, columns)
-    } else {
-      console.log('未处理的选中类型', $selectedModel)
-    }
+  if (global.$selectedModel instanceof type.ERDEntity) {
+    // 表明选择的是一个Entity
+    const selectedERDEntity = global.$selectedModel
+    console.log('选中了一个ERDEntity', selectedERDEntity)
+    addDefaultSystemColumn(selectedERDEntity, columns)
   } else {
-    app.toast.info("未选中任何模型")
+    app.elementPickerDialog.showDialog('Select a entity to add columns', null, type.ERDEntity).then(function ({
+      buttonId,
+      returnValue
+    }) {
+      if (buttonId === 'ok') {
+        const selectedERDEntity = returnValue
+        console.log('选中了一个ERDEntity', selectedERDEntity)
+        addDefaultSystemColumn(selectedERDEntity, columns)
+      }
+    })
   }
 }
 
@@ -168,7 +178,15 @@ function _handleGeneratePlantUml() {
   } else if (global.$selectedModel instanceof type.ERDEntity) {
     plantUmlGenerate.entityGenerate(global.$selectedModel)
   } else {
-    app.toast.info("选择的不是数据模型或Entity,无法生成DataModel")
+    // 这里默认弹出DataModel选择框
+    app.elementPickerDialog.showDialog('Select a data model to generate DDL', null, type.ERDDataModel).then(function ({
+      buttonId,
+      returnValue
+    }) {
+      if (buttonId === 'ok') {
+        plantUmlGenerate.dataModelGenerate(returnValue)
+      }
+    })
   }
 }
 

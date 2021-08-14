@@ -17,13 +17,15 @@ This extension for StarUML (http://staruml.io) support to generate DDL (Data Def
 
 3. [根据CREATE SQL生成DataModel](#dataModel生成)
 
+4. [PlantUML生成](#PlantUML生成)
+
 ### DDL(模型 => SQL)
 
 #### DDL快捷键
 
 `cmdctrl+g` 激活 ddl 插件
 
-#### DDL功能只有 dbms 为 NEW MYSQL 才会生效
+#### DDL功能(增强)只有 dbms 为 NEW MYSQL 才会生效
 
 ![where_new_sql_1](https://raw.githubusercontent.com/fuzi1996/pictbed/master/whereIs.png)
 

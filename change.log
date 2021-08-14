@@ -1,6 +1,0 @@
-0.0.5
-1.修复添加默认字段失败问题
-2.升级node-sql-parser版本
-
-0.0.5
-1.支持DataModel/Entity生成PlantUML
