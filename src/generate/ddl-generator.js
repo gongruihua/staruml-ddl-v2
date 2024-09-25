@@ -127,6 +127,31 @@ class DDLGenerator {
   }
 
   /**
+   * 
+   * 获取默认值
+   * */
+  getTagDefaultValue(tagElements) {
+    if(tagElements) {
+      for (i = 0; i < tagElements.length; i++) {
+        tag = tagElements[i]
+        tag_name = tagElements[i].name
+        tag_kind = agElements[i].kind
+        tag_value = agElements[i].value 
+        if (tag_name == 'default_value') {
+           if(tag_kind == 'string') {
+            return ' DEFAULT \'' + tag_value + '\''
+           }else {
+             return ' DEFAULT ' + tag_value + ''
+           }
+        }
+      }
+    }
+     
+    return ''
+  }
+
+
+  /**
    * Return DDL column string
    * @param {type.ERDColumn} elem
    * @param {Object} options
@@ -144,12 +169,16 @@ class DDLGenerator {
       line += ' NOT NULL'
     }
     if (options.dbms === 'new_mysql') {
+      //添加默认值
+      const default_value = self.getTagDefaultValue(elem.tags)
+      line += default_value
       // 增加注释
       const colComent = self.getColComent(elem)
       line += colComent
     }
     return line
   }
+
 
   /**
    * Return table comment
