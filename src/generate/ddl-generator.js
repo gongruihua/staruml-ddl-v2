@@ -132,11 +132,10 @@ class DDLGenerator {
    * */
   getTagDefaultValue(tagElements) {
     if(tagElements) {
-      for (i = 0; i < tagElements.length; i++) {
-        tag = tagElements[i]
-        tag_name = tagElements[i].name
-        tag_kind = agElements[i].kind
-        tag_value = agElements[i].value 
+      for (let tag of tagElements) {
+        const tag_name = tag.name
+        const tag_kind = tag.kind
+        const tag_value = tag.value 
         if (tag_name == 'default_value') {
            if(tag_kind == 'string') {
             return ' DEFAULT \'' + tag_value + '\''
@@ -172,7 +171,6 @@ class DDLGenerator {
       //添加默认值
       const default_value = self.getTagDefaultValue(elem.tags)
       line += default_value
-      line += ' DEFAULT tom'
       // 增加注释
       const colComent = self.getColComent(elem)
       line += colComent
