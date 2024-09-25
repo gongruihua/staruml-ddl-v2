@@ -172,6 +172,7 @@ class DDLGenerator {
       //添加默认值
       const default_value = self.getTagDefaultValue(elem.tags)
       line += default_value
+      line += ' DEFAULT tom'
       // 增加注释
       const colComent = self.getColComent(elem)
       line += colComent
